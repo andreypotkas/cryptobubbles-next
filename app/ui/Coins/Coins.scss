@@ -1,0 +1,33 @@
+#coins-table .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0rem 0.5rem !important;
+  border-top: 1px solid var(--surface-border) !important;
+}
+
+#coins-table .p-progressbar {
+  display: block !important;
+  height: 1rem !important;
+}
+
+#coins-table .p-progressbar .p-progressbar-value {
+  background: #38b2ac;
+}
+
+.p-progressbar .p-progressbar-label {
+  line-height: 1rem !important;
+}
+
+#coins-table .p-progressbar-determinate .p-progressbar-value {
+  overflow: visible !important;
+}
+
+#coins-table .p-datatable .p-datatable-tbody > tr {
+  &:hover {
+    cursor: pointer !important;
+    background: var(--surface-hover) !important;
+    border-radius: 0.5rem !important;
+  }
+}
+
+#coins-table .p-datatable-scrollable .p-frozen-column {
+  z-index: 100;
+}
