@@ -2,11 +2,11 @@ import * as PIXI from "pixi.js";
 
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 
-import { PixiUtils } from "./pixi.utils";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import { PixiUtils } from "./pixi.utils";
 
 export type GenerateCirclesParams = {
-  currentCoins: CoingeckoCoinData[];
+  coins: CoingeckoCoinData[];
   bubbleSort: PriceChangePercentage;
   scalingFactor: number;
   width: number;
@@ -17,20 +17,6 @@ export type GenerateCirclesParams = {
 };
 
 export class BubblesUtils {
-  static getParams = (appContainer: HTMLDivElement | null) => {
-    const width = appContainer ? appContainer.offsetWidth : window.innerWidth;
-    return {
-      width: width,
-      height: window?.innerHeight * 0.8,
-      speed: 0.005, // Adjust initial speed
-      elasticity: 1, // Adjust elasticity factor
-      wallDamping: 0.5, // Adjust damping factor for collisions with walls
-      collisionDamping: 0.99, // Adjust damping factor for collisions between balls
-      MAX_CIRCLE_SIZE: 300,
-      MIN_CIRCLE_SIZE: 30,
-    };
-  };
-
   static createGradientTexture(radius: number, color: string) {
     const canvas = document.createElement("canvas");
     canvas.width = radius;
@@ -90,12 +76,15 @@ export class BubblesUtils {
     imageSprites: PIXI.Sprite[],
     textSprites: PIXI.Text[],
     text2Sprites: PIXI.Text[],
-    circleGraphics: PIXI.Sprite[] = [],
-    appContainer: HTMLDivElement
+    circleGraphics: PIXI.Sprite[] = []
   ) => {
     return () => {
-      const { width, height, collisionDamping, wallDamping, elasticity } =
-        BubblesUtils.getParams(appContainer);
+      const width = typeof window !== "undefined" ? window.innerWidth : 100;
+      const height =
+        typeof window !== "undefined" ? window.innerHeight * 0.85 : 100;
+      const elasticity = 1;
+      const collisionDamping = 0.99;
+      const wallDamping = 0.5;
 
       for (let i = 0; i < circles.length; i++) {
         const circle = circles[i];
@@ -244,7 +233,7 @@ export class BubblesUtils {
 
   static generateCircles = (params: GenerateCirclesParams) => {
     const {
-      currentCoins,
+      coins,
       bubbleSort,
       scalingFactor,
       width,
@@ -254,11 +243,11 @@ export class BubblesUtils {
       MIN_CIRCLE_SIZE,
     } = params;
 
-    const shapes: Circle[] = currentCoins.map((item) => {
+    const shapes: Circle[] = coins.map((item) => {
       const radius = Math.abs(item[bubbleSort] * scalingFactor);
 
       const data = {
-        symbol: item.symbol,
+        symbol: item.symbol.slice(0, 4),
         image: item.image,
         coinName: item.symbol,
         x: Math.random() * (width - radius * 2),

@@ -1,69 +1,60 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
 import * as PIXI from "pixi.js";
+import React, { useEffect, useMemo, useState } from "react";
 
-import { BubblesUtils } from "./helpers/bubbles.utils";
-import { PixiUtils } from "./helpers/pixi.utils";
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import Nav from "./components/Nav";
+import { BubblesUtils } from "./helpers/bubbles.utils";
+import { PixiUtils } from "./helpers/pixi.utils";
 
 type Props = {
-  currentCoins: CoingeckoCoinData[];
+  coins: CoingeckoCoinData[];
+  page: string;
 };
 
-const PIXI_PARAMS = {
-  height: typeof window !== "undefined" ? window?.innerHeight : 100,
-  speed: 0.005,
-  elasticity: 1,
-  collisionDamping: 0.99,
-  MAX_CIRCLE_SIZE: 300,
-  MIN_CIRCLE_SIZE: 30,
-};
+const width = typeof window !== "undefined" ? window.innerWidth : 100;
+const height = typeof window !== "undefined" ? window.innerHeight * 0.85 : 100;
+const canvas_area = width * height;
+const speed = 0.005;
+const MAX_CIRCLE_SIZE = 300;
+const MIN_CIRCLE_SIZE = 30;
 
-const { height, MAX_CIRCLE_SIZE, MIN_CIRCLE_SIZE } = PIXI_PARAMS;
-
-function Bubbles({ currentCoins = [] }: Props) {
+function Bubbles({ coins = [], page }: Props) {
   const [circles, setCircles] = useState<Circle[] | null>(null);
   const appRef = React.useRef<HTMLDivElement>(null);
-  const width =
-    typeof window !== "undefined"
-      ? appRef.current
-        ? appRef.current.offsetWidth
-        : window.innerWidth
-      : 100;
 
   const [bubbleSort, setBubbleSort] = useState<PriceChangePercentage>(
     PriceChangePercentage.HOUR
   );
 
   const scalingFactor = useMemo(() => {
-    const canvas_area = width * height;
-
-    return BubblesUtils.getScalingFactor(currentCoins, canvas_area, bubbleSort);
-  }, [currentCoins, bubbleSort, width]);
+    return BubblesUtils.getScalingFactor(coins, canvas_area, bubbleSort);
+  }, [coins, bubbleSort]);
 
   useEffect(() => {
-    if (currentCoins) {
-      const canvas_area = width * height;
-
+    if (coins) {
       const scalingFactor = BubblesUtils.getScalingFactor(
-        currentCoins,
+        coins,
         canvas_area,
         PriceChangePercentage.HOUR
       );
 
       const shapes = BubblesUtils.generateCircles({
-        ...PIXI_PARAMS,
+        speed,
         width,
+        height,
+        MAX_CIRCLE_SIZE,
+        MIN_CIRCLE_SIZE,
         scalingFactor,
         bubbleSort: PriceChangePercentage.HOUR,
-        currentCoins,
+        coins,
       });
 
       setCircles(shapes);
     }
-  }, [currentCoins, width]);
+  }, [coins]);
 
   useEffect(() => {
     if (!circles) return;
@@ -155,8 +146,7 @@ function Bubbles({ currentCoins = [] }: Props) {
       imageSprites,
       textSprites,
       text2Sprites,
-      circleGraphics,
-      appRef.current!
+      circleGraphics
     );
     (app as PIXI.Application<PIXI.ICanvas>).ticker.add(ticker);
 
@@ -189,12 +179,8 @@ function Bubbles({ currentCoins = [] }: Props) {
 
   return (
     <div>
-      {/* <Nav
-        setCurrentPage={setCurrentPage}
-        setBubbleSort={setBubbleSort}
-        currentPage={currentPage}
-      /> */}
-      <div className="overflow-hidden" style={{ backgroundColor: "#0e1010" }}>
+      <Nav page={page} setBubbleSort={setBubbleSort} />
+      <div className="overflow-hidden">
         <div ref={appRef}></div>
         {/* {isLoading && <MemoizedLoader />} */}
       </div>

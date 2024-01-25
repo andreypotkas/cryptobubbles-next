@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+
 import "@/app/ui/globals.css";
+import Header from "./ui/Header";
+
 const inter = Poppins({ subsets: ["latin"], weight: ["400"] });
 
 export const metadata: Metadata = {
@@ -14,17 +17,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className={inter.className + " bg-gray-950 text-white"}>
-        <div className="flex flex-col p-4 bg-zinc-900">
-          <div className="flex gap-2 items-center">
-            <span className="text-2xl text-primary">Crypton</span>
-          </div>
-          <span className="font-normal text-gray-500 text-sm">
-            General info about more than 10000 cryptocurrencies.
-          </span>
-        </div>
-
+        <Header />
         {children}
       </body>
     </html>

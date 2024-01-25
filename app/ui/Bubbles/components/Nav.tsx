@@ -1,55 +1,54 @@
-import React, { useState } from "react";
-
-import { Menubar } from "primereact/menubar";
-import { MenuItem } from "primereact/menuitem";
-import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
-
+import { Button } from "@/components/ui/button";
 import { PriceChangePercentage } from "@/types/bubbles.types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
+import React from "react";
 
 type Props = {
-  currentPage: number;
+  page: string;
   setBubbleSort: React.Dispatch<React.SetStateAction<PriceChangePercentage>>;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const ROWS = 50;
-
-function Nav({ currentPage, setBubbleSort, setCurrentPage }: Props) {
-  const items: MenuItem[] = [
-    { label: "1h", command: () => setBubbleSort(PriceChangePercentage.HOUR) },
-    { label: "1d", command: () => setBubbleSort(PriceChangePercentage.DAY) },
-    { label: "1w", command: () => setBubbleSort(PriceChangePercentage.WEEK) },
-    { label: "1m", command: () => setBubbleSort(PriceChangePercentage.MONTH) },
-    { label: "1y", command: () => setBubbleSort(PriceChangePercentage.YEAR) },
+export default function Nav({ page, setBubbleSort }: Props) {
+  const items = [
+    { label: "hour", command: () => setBubbleSort(PriceChangePercentage.HOUR) },
+    { label: "day", command: () => setBubbleSort(PriceChangePercentage.DAY) },
+    { label: "week", command: () => setBubbleSort(PriceChangePercentage.WEEK) },
+    {
+      label: "month",
+      command: () => setBubbleSort(PriceChangePercentage.MONTH),
+    },
+    { label: "year", command: () => setBubbleSort(PriceChangePercentage.YEAR) },
   ];
-
-  const firstEl = (currentPage - 1) * ROWS;
-  const [first, setFirst] = useState<number>(firstEl);
-
-  const handlePageChange = (event: PaginatorPageChangeEvent) => {
-    setFirst(event.first);
-    setCurrentPage(event.page + 1);
-  };
-
   return (
-    <div className="w-full p-2 surface-card">
-      <Menubar
-        className="surface-card p-0"
-        model={items}
-        end={
-          <Paginator
-            className="p-0"
-            first={first}
-            rows={ROWS}
-            totalRecords={10000}
-            onPageChange={handlePageChange}
-            template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
-          />
-        }
-      />
+    <div className="w-full flex justify-between p-2">
+      <div className="flex gap-1">
+        {items.map((item, index) => {
+          return (
+            <Button
+              key={index}
+              className="px-1 md:px-3"
+              variant="outline"
+              onClick={item.command}
+            >
+              {item.label}
+            </Button>
+          );
+        })}
+      </div>
+      <div className="flex gap-2 items-center">
+        <Button disabled={+page <= 1} variant="outline" size="icon">
+          <Link href={`/?page=${+page - 1}`}>
+            <ChevronLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <div className="w-6 text-center"> {page}</div>
+        <Button disabled={+page >= 50} variant="outline" size="icon">
+          <Link href={`/?page=${+page + 1}`}>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }
-
-const MemoizedNavBar = React.memo(Nav);
-export default MemoizedNavBar;
