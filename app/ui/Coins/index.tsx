@@ -1,12 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import { UTCTimestamp } from "lightweight-charts";
 import Chart from "./Chart";
@@ -56,9 +48,7 @@ export default function Coins({ coins }: { coins: CoingeckoCoinData[] }) {
 
   return (
     <div className="py-12 bg-zinc-900">
-      <Table
-        style={{ maxWidth: "1680px", margin: "0 auto", padding: "0.5rem" }}
-      >
+      <Table style={{ maxWidth: "1680px", margin: "0 auto", padding: "0.5rem" }}>
         <TableCaption>General info about cryptocurrencies.</TableCaption>
         <TableHeader className="bg-zinc-950 hover:bg-zinc-900">
           <TableRow>
@@ -69,7 +59,7 @@ export default function Coins({ coins }: { coins: CoingeckoCoinData[] }) {
             {priceChangeColumns.map((item) => (
               <TableHead key={Math.random()}>{item.title + " %"}</TableHead>
             ))}
-            <TableHead className="text-right">Chart 7d</TableHead>
+            <TableHead>Chart 7d</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

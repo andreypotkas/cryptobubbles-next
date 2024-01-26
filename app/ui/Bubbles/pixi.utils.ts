@@ -8,30 +8,30 @@ export class PixiUtils {
     container.x = circle.x;
     container.y = circle.y;
     container.hitArea = new PIXI.Circle(0, 0, circle.radius);
-    container.interactive = true;
+    container.eventMode = "static";
     return container;
   };
 
   static createImageSprite = (circle: Circle) => {
     const imageSprite = PIXI.Sprite.from(circle.image);
+    const isFullSize = circle.radius * 0.3 < 10;
 
     imageSprite.anchor.set(0.5);
-    imageSprite.width = circle.radius * 0.5;
-    imageSprite.height = circle.radius * 0.5;
-    imageSprite.position = { x: 0, y: -circle.radius / 2 };
+    imageSprite.width = circle.radius * (isFullSize ? 1.2 : 0.5);
+    imageSprite.height = circle.radius * (isFullSize ? 1.2 : 0.5);
+    imageSprite.position = { x: 0, y: isFullSize ? 0 : -circle.radius / 2 };
     return imageSprite;
   };
 
   static createText = (circle: Circle) => {
-    const startFontSize = circle.radius * 0.3;
-
-    const fontSize =
-      startFontSize > 50 ? 50 : startFontSize < 25 ? 20 : startFontSize;
+    const fontSize = circle.radius * 0.3;
+    const isTextVisible = fontSize > 10;
 
     const textStyle = new PIXI.TextStyle({
-      fontSize: fontSize + "px",
+      fontSize: isTextVisible ? fontSize + "px" : 0,
       fill: "#ffffff",
     });
+
     const text = new PIXI.Text(circle.symbol.toUpperCase(), textStyle);
     text.anchor.set(0.5);
     text.position.y = 0.15 * circle.radius;
@@ -39,19 +39,15 @@ export class PixiUtils {
   };
 
   static createText2 = (circle: Circle, bubbleSort: PriceChangePercentage) => {
-    const startFontSize = circle.radius * 0.3;
-
-    const fontSize =
-      startFontSize > 40 ? 40 : startFontSize < 15 ? 15 : startFontSize;
+    const fontSize = circle.radius * 0.3;
+    const isTextVisible = fontSize > 10;
 
     const text2Style = new PIXI.TextStyle({
-      fontSize: fontSize + "px",
+      fontSize: isTextVisible ? fontSize + "px" : 0,
       fill: "#ffffff",
     });
 
-    const data = circle[bubbleSort]
-      ? circle[bubbleSort].toFixed(2) + "%"
-      : "No data";
+    const data = circle[bubbleSort] ? circle[bubbleSort].toFixed(2) + "%" : "No data";
 
     const text2 = new PIXI.Text(data, text2Style);
     text2.anchor.set(0.5);

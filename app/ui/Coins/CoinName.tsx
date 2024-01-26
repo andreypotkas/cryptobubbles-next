@@ -11,7 +11,7 @@ export default function CoinName({ coin }: Props) {
       <div className="relative w-12 h-12">
         <Image fill src={coin.image} alt={coin.id} />
       </div>
-      <span className="hidden-mob">{coin.name}</span>
+      <span>{coin.name}</span>
       <span className="uppercase">{coin.symbol}</span>
     </div>
   );

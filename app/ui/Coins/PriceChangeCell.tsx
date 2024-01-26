@@ -3,8 +3,8 @@ type Props = {
 };
 
 enum CHART_COLORS {
-  RED = "#fa9078",
-  GREEN = "#38b2ac",
+  GREEN = "rgba(46, 204, 113, 0.5)",
+  RED = "rgba(255,99,71, 0.5)",
 }
 
 export default function PriceChangeCell({ value }: Props) {

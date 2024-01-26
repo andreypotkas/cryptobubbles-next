@@ -1,12 +1,13 @@
 "use client";
 
 import * as PIXI from "pixi.js";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import Loader from "../Loader/Loader";
 import NavigationBar from "./NavigationBar";
-import { BubblesUtils } from "./bubbles.utils";
+import { BubblesUtils, appConfig } from "./bubbles.utils";
 import { PixiUtils } from "./pixi.utils";
 
 type Props = {
@@ -14,46 +15,21 @@ type Props = {
   page: string;
 };
 
-const width = typeof window !== "undefined" ? window.innerWidth : 100;
-const height = typeof window !== "undefined" ? window.innerHeight * 0.85 : 100;
-const canvas_area = width * height;
-const speed = 0.005;
-const MAX_CIRCLE_SIZE = 300;
-const MIN_CIRCLE_SIZE = 30;
+const { width, height, maxCircleSize, minCircleSize } = appConfig;
 
-export default function Bubbles({ coins, page }: Props) {
+export default function Bubbles({ coins = [], page }: Props) {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [circles, setCircles] = useState<Circle[] | null>(null);
+  const [bubbleSort, setBubbleSort] = useState(PriceChangePercentage.HOUR);
+
   const appRef = React.useRef<HTMLDivElement>(null);
 
-  const [bubbleSort, setBubbleSort] = useState<PriceChangePercentage>(
-    PriceChangePercentage.HOUR
-  );
-
-  const scalingFactor = useMemo(() => {
-    return BubblesUtils.getScalingFactor(coins, canvas_area, bubbleSort);
-  }, [coins, bubbleSort]);
-
   useEffect(() => {
-    if (coins) {
-      const scalingFactor = BubblesUtils.getScalingFactor(
-        coins,
-        canvas_area,
-        PriceChangePercentage.HOUR
-      );
+    const scalingFactor = BubblesUtils.getScalingFactor(coins);
+    const shapes = BubblesUtils.generateCircles(coins, scalingFactor);
 
-      const shapes = BubblesUtils.generateCircles({
-        speed,
-        width,
-        height,
-        MAX_CIRCLE_SIZE,
-        MIN_CIRCLE_SIZE,
-        scalingFactor,
-        bubbleSort: PriceChangePercentage.HOUR,
-        coins,
-      });
-
-      setCircles(shapes);
-    }
+    setCircles(shapes);
   }, [coins]);
 
   useEffect(() => {
@@ -64,7 +40,7 @@ export default function Bubbles({ coins, page }: Props) {
     const circleGraphics: PIXI.Sprite[] = [];
 
     const app = new PIXI.Application({
-      width,
+      width: width,
       height,
       backgroundColor: "#0e1010",
     }) as unknown;
@@ -72,9 +48,7 @@ export default function Bubbles({ coins, page }: Props) {
     const appContainer = appRef.current;
 
     appContainer?.appendChild((app as { view: Node }).view);
-    appContainer?.children[0].addEventListener("click", (e: unknown) =>
-      BubblesUtils.handleEmptySpaceClick(e as MouseEvent, circles)
-    );
+    appContainer?.children[0].addEventListener("click", (e: unknown) => BubblesUtils.handleEmptySpaceClick(e as MouseEvent, circles));
 
     for (let i = 0; i < circles.length; i++) {
       const circle = circles[i];
@@ -86,9 +60,7 @@ export default function Bubbles({ coins, page }: Props) {
       imageSprites.push(imageSprite);
       container.addChild(imageSprite);
 
-      const circleGraphic = new PIXI.Sprite(
-        BubblesUtils.createGradientTexture(circle.radius * 4, circle.color)
-      );
+      const circleGraphic = new PIXI.Sprite(BubblesUtils.createGradientTexture(circle.radius * 4, circle.color));
       circleGraphic.anchor.set(0.5);
       circleGraphics.push(circleGraphic);
       container.addChild(circleGraphic);
@@ -99,7 +71,7 @@ export default function Bubbles({ coins, page }: Props) {
       textSprites.push(text);
 
       // Create the second text
-      const text2 = PixiUtils.createText2(circle, bubbleSort);
+      const text2 = PixiUtils.createText2(circle, PriceChangePercentage.HOUR);
 
       container.addChild(text2);
       text2Sprites.push(text2);
@@ -119,50 +91,40 @@ export default function Bubbles({ coins, page }: Props) {
         container.children.pop();
       };
 
-      const handleMouseUp = (index: number) =>
-        (circles[index].dragging = false);
+      const handleMouseUp = (index: number) => (circles[index].dragging = false);
       const handleMouseDown = () => (circles[i].dragging = true);
 
       container
         // .on("click", () => handleCircleClick(i))
         .on("mousedown", () => handleMouseDown())
-        .on("mousemove", (e: MouseEvent) =>
-          BubblesUtils.handleMouseMove(e, circles)
-        )
+        .on("mousemove", (e: MouseEvent) => BubblesUtils.handleMouseMove(e, circles))
         .on("mouseup", () => handleMouseUp(i))
         .on("mouseupoutside", () => handleMouseUp(i))
         // .on("tap", () => handleCircleClick(i))
         .on("touchstart", () => handleMouseDown())
-        .on("touchmove", (e: PointerEvent) =>
-          BubblesUtils.handleMouseMove(e, circles)
-        )
+        .on("touchmove", (e: PointerEvent) => BubblesUtils.handleMouseMove(e, circles))
         .on("touchend", () => handleMouseUp(i))
         .on("mouseover", handleMouseOver)
         .on("mouseout", handleMouseOut);
     }
+    setIsLoading(false);
 
-    const ticker = BubblesUtils.update(
-      circles,
-      imageSprites,
-      textSprites,
-      text2Sprites,
-      circleGraphics
-    );
+    const ticker = BubblesUtils.update(circles, imageSprites, textSprites, text2Sprites, circleGraphics);
     (app as PIXI.Application<PIXI.ICanvas>).ticker.add(ticker);
 
     return () => {
       (app as PIXI.Application<PIXI.ICanvas>).ticker.remove(ticker);
       (app as PIXI.Application<PIXI.ICanvas>).destroy(true, true);
-      appContainer?.children[0]?.removeEventListener("click", (e: unknown) =>
-        BubblesUtils.handleEmptySpaceClick(e as MouseEvent, circles)
-      );
+      appContainer?.children[0]?.removeEventListener("click", (e: unknown) => BubblesUtils.handleEmptySpaceClick(e as MouseEvent, circles));
     };
   }, [circles]);
 
   useEffect(() => {
-    if (circles && scalingFactor && bubbleSort) {
-      const max = MAX_CIRCLE_SIZE;
-      const min = MIN_CIRCLE_SIZE;
+    const scalingFactor = BubblesUtils.getScalingFactor(coins, bubbleSort);
+
+    if (circles) {
+      const max = maxCircleSize;
+      const min = minCircleSize;
 
       circles.forEach((circle) => {
         if (!circle[bubbleSort]) return;
@@ -175,14 +137,15 @@ export default function Bubbles({ coins, page }: Props) {
         }
       });
     }
-  }, [bubbleSort, circles, scalingFactor]);
+  }, [bubbleSort, coins, circles]);
 
   return (
     <div className="rounded p-2 overflow-hidden bg-zinc-900">
-      <NavigationBar page={page} setBubbleSort={setBubbleSort} />
+      <NavigationBar bubbleSort={bubbleSort} page={page} setBubbleSort={setBubbleSort} />
       <div className="overflow-hidden">
         <div style={{ width: "100%", height: "85vh" }} className="bg-zinc-900">
           <div ref={appRef}></div>
+          {isLoading && <Loader />}
         </div>
       </div>
     </div>
