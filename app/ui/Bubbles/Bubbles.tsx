@@ -5,9 +5,9 @@ import React, { useEffect, useMemo, useState } from "react";
 
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
-import Nav from "./components/Nav";
-import { BubblesUtils } from "./helpers/bubbles.utils";
-import { PixiUtils } from "./helpers/pixi.utils";
+import NavigationBar from "./NavigationBar";
+import { BubblesUtils } from "./bubbles.utils";
+import { PixiUtils } from "./pixi.utils";
 
 type Props = {
   coins: CoingeckoCoinData[];
@@ -21,7 +21,7 @@ const speed = 0.005;
 const MAX_CIRCLE_SIZE = 300;
 const MIN_CIRCLE_SIZE = 30;
 
-function Bubbles({ coins = [], page }: Props) {
+export default function Bubbles({ coins, page }: Props) {
   const [circles, setCircles] = useState<Circle[] | null>(null);
   const appRef = React.useRef<HTMLDivElement>(null);
 
@@ -178,14 +178,13 @@ function Bubbles({ coins = [], page }: Props) {
   }, [bubbleSort, circles, scalingFactor]);
 
   return (
-    <div>
-      <Nav page={page} setBubbleSort={setBubbleSort} />
+    <div className="rounded p-2 overflow-hidden bg-zinc-900">
+      <NavigationBar page={page} setBubbleSort={setBubbleSort} />
       <div className="overflow-hidden">
-        <div ref={appRef}></div>
-        {/* {isLoading && <MemoizedLoader />} */}
+        <div style={{ width: "100%", height: "85vh" }} className="bg-zinc-900">
+          <div ref={appRef}></div>
+        </div>
       </div>
     </div>
   );
 }
-
-export default Bubbles;

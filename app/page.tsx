@@ -1,6 +1,7 @@
-import Bubbles from "./ui/Bubbles/Bubbles";
+import { imageUrlToBase64 } from "@/lib/utils";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
-import { imageUrlToBase64 } from "./lib/utils";
+import Bubbles from "./ui/Bubbles/Bubbles";
+import Coins from "./ui/Coins/Coins";
 
 async function getCoins(page: string): Promise<CoingeckoCoinData[]> {
   const response = await fetch(
@@ -32,13 +33,12 @@ export default async function Main({
   searchParams?: { page: string };
 }) {
   const { page = "1" } = searchParams as { page: string };
-
   const coins = await getCoins(page);
 
   return (
     <>
       <Bubbles page={page} coins={coins} />
-      {/* <Coins setCurrentPage={setCurrentPage} currentCoins={currentCoins} /> */}
+      <Coins coins={coins} />
     </>
   );
 }

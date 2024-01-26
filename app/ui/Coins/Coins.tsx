@@ -1,35 +1,17 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import { Column } from "primereact/column";
-import { DataTable } from "primereact/datatable";
-import { Paginator, PaginatorPageChangeEvent } from "primereact/paginator";
-import { Tooltip } from "primereact/tooltip";
-
-import HeaderCellWithIcon from "@/components/shared/HeaderCellWithIcon/HeaderCellWithIcon";
-import { ChartUtils } from "@/lib/chartUtils";
-import { Formatter } from "@/lib/formatter";
-import { CoingeckoCoinData } from "@/types/coingecko.types";
-
-import Chart from "./components/Chart";
-import CoinName from "./components/CoinName";
-import PriceChangeCell from "./components/PriceChangeCell";
-import SupplyCell from "./components/SupplyCell";
-
-import "./Coins.scss";
-
-type Props = {
-  setCurrentPage: Dispatch<SetStateAction<number>>;
-  currentCoins: CoingeckoCoinData[];
-};
-
-const tableStyle = {
-  border: "1px solid var(--surface-border)",
-  borderRadius: "var(--border-radius)",
-  maxWidth: "1280px",
-  margin: "0 auto",
-  overflow: "hidden",
-};
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { CoingeckoCoinData } from "@/types/coingecko.type";
+import { UTCTimestamp } from "lightweight-charts";
+import Chart from "./Chart";
+import CoinName from "./CoinName";
+import PriceChangeCell from "./PriceChangeCell";
 
 const priceChangeColumns = [
   {
@@ -54,94 +36,67 @@ const priceChangeColumns = [
   },
 ];
 
-export default function Coins({ currentCoins = [], setCurrentPage }: Props) {
-  const navigate = useNavigate();
-  const [first, setFirst] = useState<number>(0);
-
-  const handlePageChange = (event: PaginatorPageChangeEvent) => {
-    setFirst(event.first);
-    setCurrentPage(event.page + 1);
+export default function Coins({ coins }: { coins: CoingeckoCoinData[] }) {
+  const generateChartData = (initialData: number[]) => {
+    const interval = 1 * 60 * 60 * 1000;
+    const data = initialData.map((value, index) => {
+      const formattedTime = (Date.now() + interval * index) as UTCTimestamp;
+      return { time: formattedTime, value };
+    });
+    return data;
   };
 
-  const handleSelectCoin = (data: CoingeckoCoinData) => navigate("/" + data.id);
+  const convertToUSD = (value: number, max: number = 2) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      maximumFractionDigits: max,
+    }).format(value);
+  };
 
   return (
-    <div className="p-2 surface-card">
-      <Tooltip target=".price-change-cell">
-        <span className="text-sm">Price change percentage</span>
-      </Tooltip>
-      <Tooltip target=".rank-cell">
-        <span className="text-sm">Market cap rank</span>
-      </Tooltip>
-      <div id="coins-table" className="px-0 md:px-8">
-        <DataTable
-          rows={20}
-          scrollable
-          lazy
-          stripedRows
-          loading={!currentCoins.length}
-          value={currentCoins}
-          tableStyle={tableStyle}
-          onSelectionChange={(e) => handleSelectCoin(e.value)}
-          selectionMode="single"
-        >
-          <Column
-            frozen
-            body={(data) => <CoinName coin={data} />}
-            header="Coin"
-          ></Column>
-          <Column
-            className="text-center"
-            field="market_cap_rank"
-            header={<HeaderCellWithIcon title={"#"} className="rank-cell" />}
-          ></Column>
-          <Column
-            body={(coin) => Formatter.toUSD(coin.current_price)}
-            header="Price"
-          ></Column>
-          <Column
-            body={(coin) => Formatter.compactNumber(coin.market_cap)}
-            header="Market Cap"
-          ></Column>
-          <Column
-            body={(coin) => Formatter.compactNumber(coin.total_volume)}
-            header="Volume"
-          ></Column>
-          {priceChangeColumns.map((item) => {
-            return (
-              <Column
-                className="w-4rem"
-                key={Math.random()}
-                body={(coin) => <PriceChangeCell value={coin[item.prop]} />}
-                header={
-                  <HeaderCellWithIcon
-                    title={item.title}
-                    className="price-change-cell"
-                  />
-                }
-              ></Column>
-            );
-          })}
-          <Column
-            body={(coin) => <SupplyCell data={coin} />}
-            header="Supply"
-          ></Column>
-          <Column
-            body={(coin: CoingeckoCoinData) => (
-              <Chart
-                data={ChartUtils.generateChartData(coin.sparkline_in_7d.price)}
-              />
-            )}
-            header="Chart 7d"
-          ></Column>
-        </DataTable>
-        <Paginator
-          first={first}
-          rows={50}
-          totalRecords={10000}
-          onPageChange={handlePageChange}
-        />
-      </div>
+    <div className="py-12 bg-zinc-900">
+      <Table
+        style={{ maxWidth: "1680px", margin: "0 auto", padding: "0.5rem" }}
+      >
+        <TableCaption>General info about cryptocurrencies.</TableCaption>
+        <TableHeader className="bg-zinc-950 hover:bg-zinc-900">
+          <TableRow>
+            <TableHead className="w-[100px]">Name</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Marketcap</TableHead>
+            <TableHead>Total volume</TableHead>
+            {priceChangeColumns.map((item) => (
+              <TableHead key={Math.random()}>{item.title + " %"}</TableHead>
+            ))}
+            <TableHead className="text-right">Chart 7d</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {coins.map((coin) => (
+            <TableRow key={coin.name}>
+              <TableCell className="font-medium">
+                <CoinName coin={coin} />
+              </TableCell>
+              <TableCell>{convertToUSD(coin.current_price)}</TableCell>
+              <TableCell>{convertToUSD(coin.market_cap)}</TableCell>
+              <TableCell>{convertToUSD(coin.total_volume)}</TableCell>
+              {priceChangeColumns.map((item) => {
+                const value = coin[item.prop as keyof CoingeckoCoinData];
+                return (
+                  <TableCell key={Math.random()}>
+                    <PriceChangeCell value={value as string} />
+                  </TableCell>
+                );
+              })}
+
+              <TableCell className="p-0">
+                <Chart data={generateChartData(coin.sparkline_in_7d.price)} />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

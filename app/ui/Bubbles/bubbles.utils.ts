@@ -79,7 +79,8 @@ export class BubblesUtils {
     circleGraphics: PIXI.Sprite[] = []
   ) => {
     return () => {
-      const width = typeof window !== "undefined" ? window.innerWidth : 100;
+      const width =
+        typeof window !== "undefined" ? window.innerWidth - 30 : 100;
       const height =
         typeof window !== "undefined" ? window.innerHeight * 0.85 : 100;
       const elasticity = 1;

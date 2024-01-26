@@ -1,5 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { createChart, UTCTimestamp } from "lightweight-charts";
+"use client";
+
+import { UTCTimestamp, createChart } from "lightweight-charts";
+import { useEffect, useRef } from "react";
 
 type Props = {
   data: { time: UTCTimestamp; value: number }[];
@@ -13,7 +15,7 @@ const CHART_PROPS = {
   },
 };
 
-function Chart({ data }: Props) {
+export default function Chart({ data }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -79,6 +81,3 @@ function Chart({ data }: Props) {
 
   return <div ref={chartContainerRef} className="pb-2" />;
 }
-
-const MemoizedChart = React.memo(Chart);
-export default MemoizedChart;

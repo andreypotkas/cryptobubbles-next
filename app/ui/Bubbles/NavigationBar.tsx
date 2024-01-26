@@ -9,7 +9,7 @@ type Props = {
   setBubbleSort: React.Dispatch<React.SetStateAction<PriceChangePercentage>>;
 };
 
-export default function Nav({ page, setBubbleSort }: Props) {
+export default function NavigationBar({ page, setBubbleSort }: Props) {
   const items = [
     { label: "hour", command: () => setBubbleSort(PriceChangePercentage.HOUR) },
     { label: "day", command: () => setBubbleSort(PriceChangePercentage.DAY) },
@@ -21,7 +21,7 @@ export default function Nav({ page, setBubbleSort }: Props) {
     { label: "year", command: () => setBubbleSort(PriceChangePercentage.YEAR) },
   ];
   return (
-    <div className="w-full flex justify-between p-2">
+    <div className="w-full flex justify-between p-2 bg-zinc-900">
       <div className="flex gap-1">
         {items.map((item, index) => {
           return (
