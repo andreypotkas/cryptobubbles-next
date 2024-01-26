@@ -124,40 +124,40 @@ export interface CoingeckoSingleCoinData {
   };
   status_updates: string[];
   last_updated: string;
-  tickers: {
-    base: string;
-    target: string;
-    market: {
-      name: string;
-      identifier: string;
-      has_trading_incentive: boolean;
-    };
-    last: number;
-    volume: number;
-    converted_last: {
-      btc: number;
-      eth: number;
-      usd: number;
-    };
-    converted_volume: {
-      btc: number;
-      eth: number;
-      usd: number;
-    };
-    trust_score: string | null;
-    bid_ask_spread_percentage: number;
-    timestamp: string;
-    last_traded_at: string;
-    last_fetch_at: string;
-    is_anomaly: boolean;
-    is_stale: boolean;
-    trade_url: string;
-    token_info_url: string | null;
-    coin_id: string;
-    target_coin_id: string;
-  }[];
+  tickers: Ticker[];
 }
-
+export interface Ticker {
+  base: string;
+  target: string;
+  market: {
+    name: string;
+    identifier: string;
+    has_trading_incentive: boolean;
+  };
+  last: number;
+  volume: number;
+  converted_last: {
+    btc: number;
+    eth: number;
+    usd: number;
+  };
+  converted_volume: {
+    btc: number;
+    eth: number;
+    usd: number;
+  };
+  trust_score: string | null;
+  bid_ask_spread_percentage: number;
+  timestamp: string;
+  last_traded_at: string;
+  last_fetch_at: string;
+  is_anomaly: boolean;
+  is_stale: boolean;
+  trade_url: string;
+  token_info_url: string | null;
+  coin_id: string;
+  target_coin_id: string;
+}
 interface MarketData {
   ath: Record<string, number>;
   ath_change_percentage: Record<string, number>;

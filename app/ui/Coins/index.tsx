@@ -1,4 +1,5 @@
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { convertToUSD } from "@/lib/utils";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import { UTCTimestamp } from "lightweight-charts";
 import Chart from "./Chart";
@@ -38,17 +39,9 @@ export default function Coins({ coins }: { coins: CoingeckoCoinData[] }) {
     return data;
   };
 
-  const convertToUSD = (value: number, max: number = 2) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: max,
-    }).format(value);
-  };
-
   return (
-    <div className="py-12 bg-zinc-900">
-      <Table style={{ maxWidth: "1680px", margin: "0 auto", padding: "0.5rem" }}>
+    <div className="py-12 bg-zinc-950" style={{ maxWidth: "1680px", margin: "0 auto", padding: "0.5rem" }}>
+      <Table>
         <TableCaption>General info about cryptocurrencies.</TableCaption>
         <TableHeader className="bg-zinc-950 hover:bg-zinc-900">
           <TableRow>

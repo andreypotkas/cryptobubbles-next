@@ -213,6 +213,7 @@ export class BubblesUtils {
       const radius = Math.abs(item[bubbleSort] * scalingFactor);
 
       const data = {
+        id: item.id,
         symbol: item.symbol.slice(0, 4),
         image: item.image,
         coinName: item.symbol,

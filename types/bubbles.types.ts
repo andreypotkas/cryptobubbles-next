@@ -9,6 +9,7 @@ export enum PriceChangePercentage {
 }
 
 export type Circle = {
+  id: string;
   x: number;
   y: number;
   vx: number;

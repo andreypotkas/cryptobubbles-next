@@ -13,12 +13,18 @@ export async function imageUrlToBase64(url: string) {
 
     const contentType = response.headers.get("content-type");
 
-    const base64String = `data:${contentType};base64,${Buffer.from(
-      blob
-    ).toString("base64")}`;
+    const base64String = `data:${contentType};base64,${Buffer.from(blob).toString("base64")}`;
 
     return base64String;
   } catch (err) {
     console.log(err);
   }
 }
+
+export const convertToUSD = (value: number, max: number = 2) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: max,
+  }).format(value);
+};

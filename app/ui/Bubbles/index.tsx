@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import { useRouter } from "next/navigation";
 import Loader from "../Loader/Loader";
 import NavigationBar from "./NavigationBar";
 import { BubblesUtils, appConfig } from "./bubbles.utils";
@@ -19,6 +20,7 @@ const { width, height, maxCircleSize, minCircleSize } = appConfig;
 
 export default function Bubbles({ coins = [], page }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const router = useRouter();
 
   const [circles, setCircles] = useState<Circle[] | null>(null);
   const [bubbleSort, setBubbleSort] = useState(PriceChangePercentage.HOUR);
@@ -94,13 +96,18 @@ export default function Bubbles({ coins = [], page }: Props) {
       const handleMouseUp = (index: number) => (circles[index].dragging = false);
       const handleMouseDown = () => (circles[i].dragging = true);
 
+      const handleCircleClick = (i: number) => {
+        const { id } = circles[i];
+        router.push(`/coin/${id}`);
+      };
+
       container
-        // .on("click", () => handleCircleClick(i))
+        .on("click", () => handleCircleClick(i))
         .on("mousedown", () => handleMouseDown())
         .on("mousemove", (e: MouseEvent) => BubblesUtils.handleMouseMove(e, circles))
         .on("mouseup", () => handleMouseUp(i))
         .on("mouseupoutside", () => handleMouseUp(i))
-        // .on("tap", () => handleCircleClick(i))
+        .on("tap", () => handleCircleClick(i))
         .on("touchstart", () => handleMouseDown())
         .on("touchmove", (e: PointerEvent) => BubblesUtils.handleMouseMove(e, circles))
         .on("touchend", () => handleMouseUp(i))
@@ -117,7 +124,7 @@ export default function Bubbles({ coins = [], page }: Props) {
       (app as PIXI.Application<PIXI.ICanvas>).destroy(true, true);
       appContainer?.children[0]?.removeEventListener("click", (e: unknown) => BubblesUtils.handleEmptySpaceClick(e as MouseEvent, circles));
     };
-  }, [circles]);
+  }, [circles, router]);
 
   useEffect(() => {
     const scalingFactor = BubblesUtils.getScalingFactor(coins, bubbleSort);
