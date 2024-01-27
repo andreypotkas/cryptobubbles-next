@@ -8,7 +8,7 @@ export class PixiUtils {
     container.x = circle.x;
     container.y = circle.y;
     container.hitArea = new PIXI.Circle(0, 0, circle.radius);
-    container.eventMode = "static";
+    container.eventMode = "none";
     return container;
   };
 
