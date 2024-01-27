@@ -6,12 +6,9 @@ The application implemented using Next.js framework with Typescript. For interac
 ### Features
 
 - Interactive animation using Pixi.js: text, sprite, texture, gradient, collision.
-- Ability to drag the bubble.
 - Click on an empty space to disperse the balls.
-- Click on the ball to open the coin page.
 - Ability to switch the period of time to change view or page to load new coins.
 - Request data from coingecko API.
-- Lightweight and TradingView charts.
 
 ## Getting Started
 
