@@ -7,44 +7,46 @@ type Props = {
   data: { time: UTCTimestamp; value: number }[];
 };
 
+const chartProps = {
+  width: 250,
+  height: 60,
+  layout: {
+    textColor: "white",
+    background: {
+      color: "transparent",
+    },
+  },
+  timeScale: {
+    visible: false,
+  },
+  grid: {
+    vertLines: {
+      color: "transparent",
+    },
+    horzLines: {
+      color: "transparent",
+    },
+  },
+  crosshair: {
+    vertLine: { visible: false },
+    horzLine: { visible: false },
+  },
+
+  leftPriceScale: {
+    visible: false,
+  },
+  rightPriceScale: {
+    visible: false,
+  },
+  handleScroll: false,
+  handleScale: false,
+};
+
 export default function Chart({ data }: Props) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const chart = createChart(chartContainerRef.current!, {
-      width: 250,
-      height: 60,
-      layout: {
-        textColor: "white",
-        background: {
-          color: "transparent",
-        },
-      },
-      timeScale: {
-        visible: false,
-      },
-      grid: {
-        vertLines: {
-          color: "transparent",
-        },
-        horzLines: {
-          color: "transparent",
-        },
-      },
-      crosshair: {
-        vertLine: { visible: false },
-        horzLine: { visible: false },
-      },
-
-      leftPriceScale: {
-        visible: false,
-      },
-      rightPriceScale: {
-        visible: false,
-      },
-      handleScroll: false,
-      handleScale: false,
-    });
+    const chart = createChart(chartContainerRef.current!, chartProps);
 
     chart.timeScale().fitContent();
 

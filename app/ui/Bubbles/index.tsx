@@ -1,14 +1,14 @@
 "use client";
 
 import * as PIXI from "pixi.js";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import { BubblesUtils, appConfig } from "../../lib/bubbles.utils";
+import { PixiUtils } from "../../lib/pixi.utils";
 import Loader from "../Loader/Loader";
 import NavigationBar from "./NavigationBar";
-import { BubblesUtils, appConfig } from "./bubbles.utils";
-import { PixiUtils } from "./pixi.utils";
 
 type Props = {
   coins: CoingeckoCoinData[];
@@ -25,12 +25,17 @@ export default function Bubbles({ coins = [], page }: Props) {
 
   const appRef = React.useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const scalingFactor = BubblesUtils.getScalingFactor(coins);
-    const shapes = BubblesUtils.generateCircles(coins, scalingFactor);
+  const scalingFactor = useMemo(() => {
+    return BubblesUtils.getScalingFactor(coins, bubbleSort);
+  }, [bubbleSort, coins]);
 
-    setCircles(shapes);
-  }, [coins]);
+  useEffect(() => {
+    if (coins && scalingFactor) {
+      const shapes = BubblesUtils.generateCircles(coins, scalingFactor);
+
+      setCircles(shapes);
+    }
+  }, [coins, scalingFactor]);
 
   useEffect(() => {
     if (!circles) return;
@@ -89,8 +94,6 @@ export default function Bubbles({ coins = [], page }: Props) {
   }, [circles]);
 
   useEffect(() => {
-    const scalingFactor = BubblesUtils.getScalingFactor(coins, bubbleSort);
-
     if (circles) {
       const max = maxCircleSize;
       const min = minCircleSize;
@@ -106,7 +109,7 @@ export default function Bubbles({ coins = [], page }: Props) {
         }
       });
     }
-  }, [bubbleSort, coins, circles]);
+  }, [bubbleSort, coins, circles, scalingFactor]);
 
   return (
     <div className="rounded p-2 overflow-hidden bg-zinc-900">

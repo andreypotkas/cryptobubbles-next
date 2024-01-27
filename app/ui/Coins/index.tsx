@@ -1,5 +1,5 @@
+import { convertToUSD } from "@/app/lib/utils";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { convertToUSD } from "@/lib/utils";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import { UTCTimestamp } from "lightweight-charts";
 import Chart from "./Chart";

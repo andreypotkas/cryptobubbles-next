@@ -1,4 +1,4 @@
-import { imageUrlToBase64 } from "@/lib/utils";
+import { imageUrlToBase64 } from "@/app/lib/utils";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import Bubbles from "./ui/Bubbles";
 import Coins from "./ui/Coins";

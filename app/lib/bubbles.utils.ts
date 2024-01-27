@@ -64,7 +64,7 @@ export class BubblesUtils {
       totalSquare += area;
     }
 
-    return Math.sqrt((width * height) / totalSquare) * (width > 920 ? 0.85 : 0.5);
+    return Math.sqrt((width * height) / totalSquare) * (width > 920 ? 0.85 : 0.6);
   };
 
   static update = (circles: Circle[], imageSprites: PIXI.Sprite[], textSprites: PIXI.Text[], text2Sprites: PIXI.Text[], circleGraphics: PIXI.Sprite[] = []) => {

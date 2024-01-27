@@ -6,8 +6,14 @@ import Header from "./ui/Header";
 
 const inter = Poppins({ subsets: ["latin"], weight: ["400"] });
 
+const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL ? `${process.env.NEXT_PUBLIC_VERCEL_URL}` : "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "CryptoBubbles | Interactive visualization using Pixi.js.",
+  metadataBase: new URL(baseUrl),
+  title: {
+    default: "CryptoBubbles | Interactive visualization using Pixi.js!",
+    template: `%s | CryptoBubbles`,
+  },
   description: "General info about more than 10000 cryptocurrencies.",
 };
 
