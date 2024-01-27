@@ -27,7 +27,7 @@ export default async function CoinPage({ params }: { params: { id: string } }) {
   const coin = await getCoin(params.id);
 
   return (
-    <div className="bg-zinc-950 px-4 py-6 rounded" style={{ maxWidth: "1440px", margin: "0 auto" }}>
+    <div className="bg-zinc-950 md:px-48 px-4 md:py-24 py-4 rounded max-w-screen-2xl mx-auto">
       <Header coin={coin} />
       <div className="py-4 text-zinc-500">{coin.description.en}</div>
       <div className="flex flex-col gap-8 h-screen relative">

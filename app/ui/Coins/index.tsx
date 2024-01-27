@@ -40,7 +40,7 @@ export default function Coins({ coins }: { coins: CoingeckoCoinData[] }) {
   };
 
   return (
-    <div className="py-12 bg-zinc-950" style={{ maxWidth: "1680px", margin: "0 auto", padding: "0.5rem" }}>
+    <div className="py-12 bg-zinc-950 max-w-screen-2xl mx-auto md:px-12 px-4">
       <Table>
         <TableCaption>General info about cryptocurrencies.</TableCaption>
         <TableHeader className="bg-zinc-950 hover:bg-zinc-900">
