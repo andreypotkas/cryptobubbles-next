@@ -9,7 +9,7 @@ export default function Header() {
 
         <div className="flex flex-col">
           <span className="text-base md:text-2xl">CryptoBubbles</span>
-          <span className="text-gray-500 md:text-sm text-xs">General info about more than 10000 cryptocurrencies.</span>
+          <span className="text-gray-500 md:text-sm text-xs">General info about more than 500 cryptocurrencies.</span>
         </div>
       </Link>
       <div></div>

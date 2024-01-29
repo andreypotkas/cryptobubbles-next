@@ -1,5 +1,5 @@
+import { Button } from "@/components/ui/button";
 import { PriceChangePercentage } from "@/types/bubbles.types";
-import { Button } from "@/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";
@@ -11,6 +11,8 @@ type Props = {
 };
 
 export default function NavigationBar({ page, bubbleSort, setBubbleSort }: Props) {
+  console.log(page);
+
   const items = [
     { label: "hour", sortValue: PriceChangePercentage.HOUR },
     { label: "day", sortValue: PriceChangePercentage.DAY },
@@ -36,7 +38,7 @@ export default function NavigationBar({ page, bubbleSort, setBubbleSort }: Props
           </Link>
         </Button>
         <div className="w-6 text-center"> {page}</div>
-        <Button disabled={+page >= 10} variant="outline" size="icon">
+        <Button disabled={+page >= 6} variant="outline" size="icon">
           <Link href={`/?page=${+page + 1}`}>
             <ChevronRight className="h-4 w-4" />
           </Link>
