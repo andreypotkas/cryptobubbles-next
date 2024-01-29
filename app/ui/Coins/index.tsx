@@ -1,6 +1,6 @@
 import { convertToUSD } from "@/app/lib/utils";
-import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/ui/table";
 import { UTCTimestamp } from "lightweight-charts";
 import Chart from "./Chart";
 import CoinName from "./CoinName";

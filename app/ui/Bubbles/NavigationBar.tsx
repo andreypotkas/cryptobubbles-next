@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { PriceChangePercentage } from "@/types/bubbles.types";
+import { Button } from "@/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import React from "react";

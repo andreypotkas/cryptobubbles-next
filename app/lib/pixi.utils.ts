@@ -13,7 +13,7 @@ export class PixiUtils {
   };
 
   static createImageSprite = (circle: Circle) => {
-    const imageSprite = PIXI.Sprite.from(circle.image);
+    const imageSprite = PIXI.Sprite.from(`/assets/coins/${circle.id}.png`);
     const isFullSize = circle.radius * 0.3 < 10;
 
     imageSprite.anchor.set(0.5);
