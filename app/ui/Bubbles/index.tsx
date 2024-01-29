@@ -30,12 +30,14 @@ export default function Bubbles({ coins = [], page }: Props) {
   }, [bubbleSort, coins]);
 
   useEffect(() => {
+    const scalingFactor = BubblesUtils.getScalingFactor(coins, PriceChangePercentage.HOUR);
+
     if (coins && scalingFactor) {
       const shapes = BubblesUtils.generateCircles(coins, scalingFactor);
 
       setCircles(shapes);
     }
-  }, [coins, scalingFactor]);
+  }, [coins]);
 
   useEffect(() => {
     if (!circles) return;

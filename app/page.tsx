@@ -1,4 +1,3 @@
-import { imageUrlToBase64 } from "@/app/lib/utils";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import Bubbles from "./ui/Bubbles";
 import Coins from "./ui/Coins";
@@ -19,12 +18,7 @@ async function getCoins(page: string): Promise<CoingeckoCoinData[]> {
 
   const data = await response.json();
 
-  return await Promise.all(
-    data.map(async (item: CoingeckoCoinData) => {
-      const dataUrl = await imageUrlToBase64(item.image);
-      return { ...item, image: dataUrl };
-    })
-  );
+  return data;
 }
 
 export default async function Main({ searchParams }: { searchParams?: { page: string } }) {
