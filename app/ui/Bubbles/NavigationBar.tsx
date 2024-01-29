@@ -36,7 +36,7 @@ export default function NavigationBar({ page, bubbleSort, setBubbleSort }: Props
           </Link>
         </Button>
         <div className="w-6 text-center"> {page}</div>
-        <Button disabled={+page >= 50} variant="outline" size="icon">
+        <Button disabled={+page >= 10} variant="outline" size="icon">
           <Link href={`/?page=${+page + 1}`}>
             <ChevronRight className="h-4 w-4" />
           </Link>
