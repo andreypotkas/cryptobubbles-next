@@ -86,7 +86,7 @@ export default function Bubbles({ coins = [], page }: Props) {
     setIsLoading(false);
 
     const ticker = BubblesUtils.update(circles, imageSprites, textSprites, text2Sprites, circleGraphics);
-    (app as PIXI.Application<PIXI.ICanvas>).ticker.add(ticker);
+    setTimeout(() => (app as PIXI.Application<PIXI.ICanvas>).ticker.add(ticker), 200);
 
     return () => {
       (app as PIXI.Application<PIXI.ICanvas>).ticker.remove(ticker);
@@ -118,7 +118,7 @@ export default function Bubbles({ coins = [], page }: Props) {
       <NavigationBar bubbleSort={bubbleSort} page={page} setBubbleSort={setBubbleSort} />
       <div className="overflow-hidden">
         <div style={{ width: "100%", height: "85vh" }} className="bg-zinc-900">
-          <div ref={appRef}></div>
+          <div className={"mx-auto"} ref={appRef}></div>
           {isLoading && <Loader />}
         </div>
       </div>

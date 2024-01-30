@@ -8,7 +8,7 @@ type Props = {
 };
 
 const chartProps = {
-  width: 250,
+  width: 300,
   height: 60,
   layout: {
     textColor: "white",

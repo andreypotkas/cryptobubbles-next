@@ -28,7 +28,7 @@ export default async function Main({ searchParams }: { searchParams?: { page: st
   return (
     <>
       <Bubbles page={page} coins={coins} />
-      <Coins coins={coins} />
+      <Coins page={page} coins={coins} />
     </>
   );
 }
