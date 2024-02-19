@@ -1,15 +1,13 @@
 "use client";
 
-import * as PIXI from "pixi.js";
-import React, { useEffect, useMemo, useState } from "react";
-
+import { PixiUtils } from "@/app/lib/pixi.utils";
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
+import * as PIXI from "pixi.js";
+import React, { useEffect, useMemo, useState } from "react";
 import { BubblesUtils, appConfig } from "../../lib/bubbles.utils";
-import { PixiUtils } from "../../lib/pixi.utils";
 import Loader from "../Loader/Loader";
 import NavigationBar from "./NavigationBar";
-
 type Props = {
   coins: CoingeckoCoinData[];
   page: string;
@@ -61,13 +59,12 @@ export default function Bubbles({ coins = [], page }: Props) {
       const circle = circles[i];
 
       const container = PixiUtils.createContainer(circle);
-      (app as PIXI.Application<PIXI.ICanvas>).stage.addChild(container);
 
       const imageSprite = PixiUtils.createImageSprite(circle);
       imageSprites.push(imageSprite);
       container.addChild(imageSprite);
 
-      const circleGraphic = new PIXI.Sprite(BubblesUtils.createGradientTexture(circle.radius * 4, circle.color));
+      const circleGraphic = new PIXI.Sprite(PixiUtils.createGradientTexture(circle.radius * 4, circle.color));
       circleGraphic.anchor.set(0.5);
       circleGraphics.push(circleGraphic);
       container.addChild(circleGraphic);
@@ -82,6 +79,8 @@ export default function Bubbles({ coins = [], page }: Props) {
 
       container.addChild(text2);
       text2Sprites.push(text2);
+
+      (app as PIXI.Application<PIXI.ICanvas>).stage.addChild(container);
     }
     setIsLoading(false);
 
@@ -114,14 +113,10 @@ export default function Bubbles({ coins = [], page }: Props) {
   }, [bubbleSort, coins, circles, scalingFactor]);
 
   return (
-    <div className="rounded p-2 overflow-hidden bg-zinc-900">
+    <div className="rounded px-2 overflow-hidden bg-zinc-900">
       <NavigationBar bubbleSort={bubbleSort} page={page} setBubbleSort={setBubbleSort} />
-      <div className="overflow-hidden">
-        <div style={{ width: "100%", height: "85vh" }} className="bg-zinc-900">
-          <div className={"mx-auto"} ref={appRef}></div>
-          {isLoading && <Loader />}
-        </div>
-      </div>
+      <div style={{ height: "82vh" }} className="bg-zinc-900 w-full overflow-hidden border-2 rounded border-gray-800" ref={appRef}></div>
+      {isLoading && <Loader />}
     </div>
   );
 }

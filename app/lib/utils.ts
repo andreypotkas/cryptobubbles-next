@@ -16,9 +16,7 @@ export async function imageUrlToBase64(url: string) {
     const base64String = `data:${contentType};base64,${Buffer.from(blob).toString("base64")}`;
 
     return base64String;
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
 }
 
 export const convertToUSD = (value: number, max: number = 2) => {

@@ -1,6 +1,5 @@
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import Bubbles from "./ui/Bubbles";
-import Coins from "./ui/Coins";
 
 async function getCoins(page: string): Promise<CoingeckoCoinData[]> {
   const response = await fetch(
@@ -8,7 +7,7 @@ async function getCoins(page: string): Promise<CoingeckoCoinData[]> {
       "coins/markets?" +
       "vs_currency=usd" +
       "&order=market_cap_desc" +
-      "&per_page=100" +
+      "&per_page=250" +
       `&page=${page}` +
       "&sparkline=true" +
       "&price_change_percentage=1h%2C24h%2C7d%2C30d%2C1y" +
@@ -28,7 +27,7 @@ export default async function Main({ searchParams }: { searchParams?: { page: st
   return (
     <>
       <Bubbles page={page} coins={coins} />
-      <Coins page={page} coins={coins} />
+      {/* <Coins page={page} coins={coins} /> */}
     </>
   );
 }

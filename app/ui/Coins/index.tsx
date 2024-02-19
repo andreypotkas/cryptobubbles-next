@@ -2,7 +2,6 @@ import { convertToUSD } from "@/app/lib/utils";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import { UTCTimestamp } from "lightweight-charts";
-import Pagination from "../Pagination";
 import Chart from "./Chart";
 import CoinName from "./CoinName";
 import PriceChangeCell from "./PriceChangeCell";
@@ -85,9 +84,6 @@ export default function Coins({ coins, page }: { page: string; coins: CoingeckoC
             ))}
           </TableBody>
         </Table>
-      </div>
-      <div className="p-4 w-full flex justify-center">
-        <Pagination page={page} />
       </div>
     </div>
   );

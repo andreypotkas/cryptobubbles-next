@@ -1,7 +1,7 @@
+"use client";
 import * as PIXI from "pixi.js";
 
 import { Circle, PriceChangePercentage } from "@/types/bubbles.types";
-
 import { CoingeckoCoinData } from "@/types/coingecko.type";
 import { PixiUtils } from "./pixi.utils";
 
@@ -12,51 +12,23 @@ export type GenerateCirclesParams = {
 };
 
 export const appConfig = {
-  width: typeof window !== "undefined" ? window.innerWidth : 100,
-  height: typeof window !== "undefined" ? window.innerHeight * 0.85 : 100,
+  width: window.innerWidth - 16,
+  height: window.innerHeight * 0.82,
   speed: 0.005,
   elasticity: 0.005,
   wallDamping: 0.5,
-  maxCircleSize: 300,
-  minCircleSize: 15,
+  maxCircleSize: 250,
+  minCircleSize: window.innerWidth ? (window.innerWidth > 920 ? 30 : 15) : 15,
 };
 
 const { wallDamping, width, height, speed, elasticity, maxCircleSize, minCircleSize } = appConfig;
 
+const changeSizeStep = 3;
+
 export class BubblesUtils {
-  static createGradientTexture(radius: number, color: string) {
-    const canvas = document.createElement("canvas");
-    canvas.width = radius;
-    canvas.height = radius;
-
-    const context = canvas.getContext("2d")!;
-
-    const gradient = context.createRadialGradient(radius / 2, radius / 2, 0, radius / 2, radius / 2, radius / 2);
-
-    switch (color) {
-      case "green":
-        gradient.addColorStop(0, "rgba(46, 204, 113, 0)");
-        gradient.addColorStop(0.42, "rgba(46, 204, 113, 0.15)");
-        gradient.addColorStop(0.6, "rgba(46, 204, 113, 0.92)");
-        break;
-      case "red":
-        gradient.addColorStop(0, "rgba(255,99,71, 0.1)");
-        gradient.addColorStop(0.45, "rgba(255,99,71, 0.15)");
-        gradient.addColorStop(0.6, "rgba(255,99,71, 0.95)");
-        break;
-    }
-
-    context.fillStyle = gradient;
-    context.beginPath();
-    context.arc(radius / 2, radius / 2, radius / 2 / 2, 0, Math.PI * 2);
-    context.fill();
-
-    return PIXI.Texture.from(canvas);
-  }
-
   static getScalingFactor = (data: CoingeckoCoinData[], bubbleSort: PriceChangePercentage = PriceChangePercentage.HOUR): number => {
     if (!data) return 1;
-    const max = data && data.map((item) => Math.abs(+item[bubbleSort]));
+    const max = data.map((item) => Math.abs(+item[bubbleSort]!));
     let totalSquare = 0;
 
     for (let i = 0; i < max.length; i++) {
@@ -64,7 +36,7 @@ export class BubblesUtils {
       totalSquare += area;
     }
 
-    return Math.sqrt((width * height) / totalSquare) * (width > 920 ? 0.85 : 0.6);
+    return Math.sqrt((width * height) / totalSquare) * (width > 920 ? 0.8 : 0.5);
   };
 
   static update = (circles: Circle[], imageSprites: PIXI.Sprite[], textSprites: PIXI.Text[], text2Sprites: PIXI.Text[], circleGraphics: PIXI.Sprite[] = []) => {
@@ -77,7 +49,7 @@ export class BubblesUtils {
         const text2 = text2Sprites[i];
 
         const updateCircleChilds = () => {
-          circleGraphic.texture = BubblesUtils.createGradientTexture(circle.radius * 4, circle.color);
+          circleGraphic.texture = PixiUtils.createGradientTexture(circle.radius * 4, circle.color);
 
           const fontSize = circle.radius * 0.5;
           const isFullSize = circle.radius * 0.5 < 20;
@@ -113,20 +85,17 @@ export class BubblesUtils {
         // Check for collisions with walls
         if (circle.x - circle.radius < 0) {
           circle.x = circle.radius; // Keep the circle inside the left wall
-          circle.vx *= -1;
           circle.vx *= 1 - wallDamping; // Apply wall damping
         } else if (circle.x + circle.radius > width) {
           circle.x = width - circle.radius; // Keep the circle inside the right wall
-          circle.vx *= -1;
           circle.vx *= 1 - wallDamping; // Apply wall damping
         }
+
         if (circle.y - circle.radius < 0) {
           circle.y = circle.radius; // Keep the circle inside the top wall
-          circle.vy *= -1;
           circle.vy *= 1 - wallDamping; // Apply wall damping
         } else if (circle.y + circle.radius > height) {
           circle.y = height - circle.radius; // Keep the circle inside the bottom wall
-          circle.vy *= -1;
           circle.vy *= 1 - wallDamping; // Apply wall damping
         }
 
@@ -146,7 +115,7 @@ export class BubblesUtils {
             const overlap = totalRadius - distance;
             const force = overlap * elasticity;
 
-            const dampingFactor = 1 - wallDamping;
+            const dampingFactor = wallDamping;
             circle.vx -= force * Math.cos(angle) * dampingFactor + circle.vx * 0.01;
             circle.vy -= force * Math.sin(angle) * dampingFactor + circle.vy * 0.01;
             otherCircle.vx += force * Math.cos(angle) * dampingFactor;
@@ -156,20 +125,20 @@ export class BubblesUtils {
 
         // Update container position
         const container = circleGraphic.parent as PIXI.Container;
-        container.x = circle.x;
-        container.y = circle.y;
-        container.hitArea = new PIXI.Circle(0, 0, circle.radius);
+        container.position.set(circle.x, circle.y);
 
         // Smoothly change the size of the circle
         if (circle.radius !== circle.targetRadius) {
-          const sizeDifference = circle.targetRadius - circle.radius;
-          const step = 1;
+          // container.children.forEach((item) => (item.cacheAsBitmap = false));
+          container.cacheAsBitmap = false;
 
-          if (Math.abs(sizeDifference) <= step) {
+          const sizeDifference = circle.targetRadius - circle.radius;
+
+          if (Math.abs(sizeDifference) <= changeSizeStep) {
             circle.radius = circle.targetRadius;
-            updateCircleChilds();
+            container.cacheAsBitmap = true;
           } else {
-            circle.radius > circle.targetRadius ? (circle.radius -= step) : (circle.radius += step);
+            circle.radius > circle.targetRadius ? (circle.radius -= changeSizeStep) : (circle.radius += changeSizeStep);
             updateCircleChilds();
           }
         }
@@ -210,7 +179,7 @@ export class BubblesUtils {
 
   static generateCircles = (coins: CoingeckoCoinData[], scalingFactor: number, bubbleSort: PriceChangePercentage = PriceChangePercentage.HOUR) => {
     const shapes: Circle[] = coins.map((item) => {
-      const radius = Math.abs(item[bubbleSort] * scalingFactor);
+      const radius = Math.abs(item[bubbleSort]! * scalingFactor);
 
       const data = {
         id: item.id,
@@ -221,7 +190,7 @@ export class BubblesUtils {
         y: Math.random() * (height - radius * 2),
         vx: Math.random() * speed * 2 - speed,
         vy: Math.random() * speed * 2 - speed,
-        color: item[bubbleSort] > 0 ? "green" : "red",
+        color: item[bubbleSort]! > 0 ? "green" : "red",
         targetRadius: radius > maxCircleSize ? maxCircleSize : radius > minCircleSize ? radius : minCircleSize,
         radius: minCircleSize,
         dragging: false,
