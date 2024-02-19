@@ -1,3 +1,55 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* primereact */
+
+#coins-table {
+  border: 1px solid var(--surface-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin: 0 auto;
+  max-width: 1680px;
+}
+
+#coins-table .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.5rem;
+  border-top: 1px solid var(--surface-border);
+}
+
+#coins-table .p-progressbar {
+  display: block;
+  height: 1rem;
+  border-radius: var(--border-radius);
+}
+
+#coins-table .p-progressbar .p-progressbar-value {
+  background: rgba(46, 204, 113, 0.5);
+}
+
+.p-progressbar .p-progressbar-label {
+  line-height: 1rem !important;
+}
+
+#coins-table .p-progressbar-determinate .p-progressbar-value {
+  overflow: visible;
+}
+
+#coins-table .p-datatable .p-datatable-tbody > tr {
+  &:hover {
+    cursor: pointer;
+    border-radius: 0.5rem;
+  }
+}
+
+#coins-table .p-datatable-scrollable .p-frozen-column {
+  z-index: 100;
+  border-right: 1px solid var(--surface-border);
+  max-width: 12rem;
+}
+
+@media (max-width: 776px) {
+  html {
+    font-size: 12px;
+  }
+}

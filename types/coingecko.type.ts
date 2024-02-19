@@ -1,4 +1,4 @@
-interface SparklineData {
+export interface SparklineData {
   price: number[];
 }
 

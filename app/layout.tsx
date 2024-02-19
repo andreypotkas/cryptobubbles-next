@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 import "@/app/ui/globals.css";
+import "primereact/resources/primereact.css";
+import "primereact/resources/themes/md-dark-deeppurple/theme.css";
+import { PrimeReactProviders } from "./providers";
 import Header from "./ui/Header";
 
 const inter = Poppins({ subsets: ["latin"], weight: ["400"] });
@@ -26,7 +29,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={inter.className + " bg-zinc-900 text-white"}>
         <Header />
-        {children}
+        <PrimeReactProviders>{children}</PrimeReactProviders>{" "}
       </body>
     </html>
   );

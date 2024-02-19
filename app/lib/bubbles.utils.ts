@@ -13,7 +13,7 @@ export type GenerateCirclesParams = {
 
 export const appConfig = {
   width: window.innerWidth - 16,
-  height: window.innerHeight * 0.82,
+  height: window.innerHeight * 0.84,
   speed: 0.005,
   elasticity: 0.005,
   wallDamping: 0.5,
@@ -23,7 +23,7 @@ export const appConfig = {
 
 const { wallDamping, width, height, speed, elasticity, maxCircleSize, minCircleSize } = appConfig;
 
-const changeSizeStep = 3;
+const changeSizeStep = 2;
 
 export class BubblesUtils {
   static getScalingFactor = (data: CoingeckoCoinData[], bubbleSort: PriceChangePercentage = PriceChangePercentage.HOUR): number => {
@@ -85,17 +85,20 @@ export class BubblesUtils {
         // Check for collisions with walls
         if (circle.x - circle.radius < 0) {
           circle.x = circle.radius; // Keep the circle inside the left wall
+          circle.vx *= -1;
           circle.vx *= 1 - wallDamping; // Apply wall damping
         } else if (circle.x + circle.radius > width) {
           circle.x = width - circle.radius; // Keep the circle inside the right wall
+          circle.vx *= -1;
           circle.vx *= 1 - wallDamping; // Apply wall damping
         }
-
         if (circle.y - circle.radius < 0) {
           circle.y = circle.radius; // Keep the circle inside the top wall
+          circle.vy *= -1;
           circle.vy *= 1 - wallDamping; // Apply wall damping
         } else if (circle.y + circle.radius > height) {
           circle.y = height - circle.radius; // Keep the circle inside the bottom wall
+          circle.vy *= -1;
           circle.vy *= 1 - wallDamping; // Apply wall damping
         }
 

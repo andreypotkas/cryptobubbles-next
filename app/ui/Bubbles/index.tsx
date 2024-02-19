@@ -8,14 +8,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { BubblesUtils, appConfig } from "../../lib/bubbles.utils";
 import Loader from "../Loader/Loader";
 import NavigationBar from "./NavigationBar";
+
 type Props = {
   coins: CoingeckoCoinData[];
-  page: string;
 };
 
 const { width, height, maxCircleSize, minCircleSize } = appConfig;
 
-export default function Bubbles({ coins = [], page }: Props) {
+export default function Bubbles({ coins = [] }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [circles, setCircles] = useState<Circle[] | null>(null);
@@ -28,11 +28,9 @@ export default function Bubbles({ coins = [], page }: Props) {
   }, [bubbleSort, coins]);
 
   useEffect(() => {
-    const scalingFactor = BubblesUtils.getScalingFactor(coins, PriceChangePercentage.HOUR);
-
-    if (coins && scalingFactor) {
+    if (coins) {
+      const scalingFactor = BubblesUtils.getScalingFactor(coins, PriceChangePercentage.HOUR);
       const shapes = BubblesUtils.generateCircles(coins, scalingFactor);
-
       setCircles(shapes);
     }
   }, [coins]);
@@ -82,10 +80,12 @@ export default function Bubbles({ coins = [], page }: Props) {
 
       (app as PIXI.Application<PIXI.ICanvas>).stage.addChild(container);
     }
-    setIsLoading(false);
 
     const ticker = BubblesUtils.update(circles, imageSprites, textSprites, text2Sprites, circleGraphics);
-    setTimeout(() => (app as PIXI.Application<PIXI.ICanvas>).ticker.add(ticker), 200);
+    setTimeout(() => {
+      (app as PIXI.Application<PIXI.ICanvas>).ticker.add(ticker);
+      setIsLoading(false);
+    }, 500);
 
     return () => {
       (app as PIXI.Application<PIXI.ICanvas>).ticker.remove(ticker);
@@ -113,9 +113,9 @@ export default function Bubbles({ coins = [], page }: Props) {
   }, [bubbleSort, coins, circles, scalingFactor]);
 
   return (
-    <div className="rounded px-2 overflow-hidden bg-zinc-900">
-      <NavigationBar bubbleSort={bubbleSort} page={page} setBubbleSort={setBubbleSort} />
-      <div style={{ height: "82vh" }} className="bg-zinc-900 w-full overflow-hidden border-2 rounded border-gray-800" ref={appRef}></div>
+    <div className="flex rounded px-2 overflow-hidden bg-zinc-900 md:flex-col flex-col-reverse">
+      <NavigationBar bubbleSort={bubbleSort} setBubbleSort={setBubbleSort} />
+      <div style={{ height: "84vh" }} className="bg-zinc-900 w-full overflow-hidden border-2 rounded border-gray-800" ref={appRef}></div>
       {isLoading && <Loader />}
     </div>
   );
