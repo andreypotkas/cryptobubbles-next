@@ -16,7 +16,6 @@ async function getCoins(): Promise<CoingeckoCoinData[]> {
   );
 
   const data = await response.json();
-
   return data;
 }
 

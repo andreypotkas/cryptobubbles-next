@@ -1,5 +1,6 @@
 "use client";
 
+import clsx from "clsx";
 import { UTCTimestamp, createChart } from "lightweight-charts";
 import { useEffect, useRef } from "react";
 
@@ -63,5 +64,17 @@ export default function Chart({ data }: Props) {
     };
   }, [data]);
 
-  return <div ref={chartContainerRef} className="pb-2" />;
+  return (
+    <div className="w-[300px] h-[60px] relative pb-2">
+      <div ref={chartContainerRef} className={clsx(!chartContainerRef.current && "invisible")} />
+      {!chartContainerRef.current && (
+        <div className="max-w-sm animate-pulse absolute bottom-0">
+          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-[300px] mb-2.5"></div>
+          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-[300px] mb-2.5"></div>
+          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-[300px] mb-2.5"></div>
+          <div className="h-2 bg-gray-200 rounded-full dark:bg-gray-700 w-[300px]"></div>
+        </div>
+      )}
+    </div>
+  );
 }

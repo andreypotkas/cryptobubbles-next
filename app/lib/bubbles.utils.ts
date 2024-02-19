@@ -12,15 +12,14 @@ export type GenerateCirclesParams = {
 };
 
 export const appConfig = {
-  width: window.innerWidth - 16,
-  height: window.innerHeight * 0.84,
+  width: typeof window !== "undefined" ? window.innerWidth - 16 : 100,
+  height: typeof window !== "undefined" ? window.innerHeight * 0.84 : 100,
   speed: 0.005,
   elasticity: 0.005,
   wallDamping: 0.5,
   maxCircleSize: 250,
-  minCircleSize: window.innerWidth ? (window.innerWidth > 920 ? 30 : 15) : 15,
+  minCircleSize: typeof window !== "undefined" ? (window.innerWidth ? (window.innerWidth > 920 ? 30 : 15) : 15) : 15,
 };
-
 const { wallDamping, width, height, speed, elasticity, maxCircleSize, minCircleSize } = appConfig;
 
 const changeSizeStep = 2;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 
-import "@/app/ui/globals.css";
+import "@/app/ui/globals.scss";
 import "primereact/resources/primereact.css";
 import "primereact/resources/themes/md-dark-deeppurple/theme.css";
 import { PrimeReactProviders } from "./providers";
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     default: "CryptoBubbles | Interactive visualization using Pixi.js!",
     template: `%s | CryptoBubbles`,
   },
-  description: "General info about more than 10000 cryptocurrencies.",
+  description: "General info abouttop 250 cryptocurrencies.",
 };
 
 export default function RootLayout({
@@ -27,9 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={inter.className + " bg-zinc-900 text-white"}>
+      <body className={inter.className + " bg-zinc-900 text-white "}>
         <Header />
-        <PrimeReactProviders>{children}</PrimeReactProviders>{" "}
+        <div className="mt-2">
+          <PrimeReactProviders>{children}</PrimeReactProviders>
+        </div>
       </body>
     </html>
   );
